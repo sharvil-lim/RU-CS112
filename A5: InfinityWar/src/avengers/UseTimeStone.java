@@ -71,30 +71,64 @@ public class UseTimeStone {
         StdIn.setFile(inputFile);
         StdOut.setFile(outputFile);
 
-        int t = StdIn.readInt();
-        int v = StdIn.readInt();
+        int threshold = StdIn.readInt();
+        int numOfEvents = StdIn.readInt();
+        int[] events = new int[numOfEvents];
+        int[][] adjMatrix = new int[numOfEvents][numOfEvents];
 
-        Timeline timeline = new Timeline();
-
-        for (int i = 0; i < v; i++) {
-            int eventNumber = StdIn.readInt();
-            int euValue = StdIn.readInt();
-            Event event = new Event(eventNumber, euValue);
-            timeline.addEvent(event);
+        for (int i = 0; i < numOfEvents; i++) {
+            events[StdIn.readInt()] = StdIn.readInt();
         }
 
-        int[][] matrix = new int[v][v];
-
-        for (int row = 0; row < v; row++) {
-            for (int col = 0; col < v; col++) {
-                matrix[row][col] = StdIn.readInt();
+        for (int r = 0; r < numOfEvents; r++) {
+            for (int c = 0; c < numOfEvents; c++) {
+                adjMatrix[r][c] = StdIn.readInt();
             }
         }
 
-        timeline.initMatrix(matrix);
+        ArrayList<Integer> EUVals = dfs(adjMatrix, events);
+        int timelines = EUVals.size();
+        int threshTimelines = 0;
 
-        timeline.useTimeStone();
-        StdOut.println(timeline.getTotalPossibilities());
-        StdOut.println(timeline.getEUPossibilities(t));
+        for (int ii = 0; ii < timelines; ii++) {
+            //System.out.print(EUVals.get(ii) + " ");
+            if (EUVals.get(ii) >= threshold) threshTimelines++;
+        }
+
+        StdOut.print(timelines + "\n" + threshTimelines);
+    }
+
+    private static ArrayList<Integer> dfs (int[][] am, int[] ev) {
+        Stack<Integer> eventStack = new Stack<>();
+        ArrayList<Integer> euVals = new ArrayList<>(), euCorr = new ArrayList<>();
+        int save = 0;
+
+        eventStack.push(0);
+        euCorr.add(0);
+        euVals.add(ev[0]);
+        while (!eventStack.isEmpty()) {
+            int parent = eventStack.peek();
+            boolean findNext = false;
+
+            for (int ii = save; ii < am[parent].length; ii++) {
+                if (am[parent][ii] == 1) {
+                    eventStack.push(ii);
+                    euCorr.add(ii);
+                    for (int jj = euCorr.size() - 1; jj >= 0; jj--) {
+                        if (euCorr.get(jj) == parent) {
+                            euVals.add(euVals.get(jj) + ev[ii]);
+                            findNext = true;
+                            break;
+                        }
+                    }
+                    if (findNext) break;
+                } 
+            }
+
+            if (!findNext) save = eventStack.pop() + 1;
+            else save = 0;
+        }
+
+        return euVals;
     }
 }

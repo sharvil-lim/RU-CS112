@@ -64,28 +64,45 @@ public class PredictThanosSnap {
             StdOut.println("Execute: java PredictThanosSnap <INput file> <OUTput file>");
             return;
         }
-        
+
         String inputFile = args[0];
         String outputFile = args[1];
         StdIn.setFile(inputFile);
         StdOut.setFile(outputFile);
 
-        long seed = StdIn.readLong();
+        StdRandom.setSeed(StdIn.readLong());
+        int nodes = StdIn.readInt();
+        int n = nodes;
+        int[][] adjNetwork = new int[nodes][nodes];
 
-        int p = StdIn.readInt();
-        int[][] matrix = new int[p][p];
-        SocialNetwork socialNetwork = new SocialNetwork(p);
-        socialNetwork.addNodes(p);
-
-        for (int a = 0; a < p; a++) {
-            for (int b = 0; b < p; b++) {
-                matrix[a][b] = StdIn.readInt();
+        for (int r = 0; r < nodes; r++) {
+            for (int c = 0; c < nodes; c++) {
+                adjNetwork[r][c] = StdIn.readInt();
+            }
+        }
+        
+        for (int r = 0; r < nodes; r++) {
+            if (StdRandom.uniform() <= 0.5) {
+                n--;
+                for (int c = 0; c < nodes; c++) {
+                    adjNetwork[r][c] = 0;
+                    adjNetwork[r][c] = 0;
+                }
             }
         }
 
-        socialNetwork.addEdges(matrix);
-        socialNetwork.snap(seed);
+        int edges = 0;
 
-        StdOut.print(socialNetwork.connectivityTest());
+        for (int r = 0; r < nodes; r++) {
+            for (int c = 0; c < nodes; c++) {
+                if (adjNetwork[r][c] == 1) {
+                    edges++;
+                }
+            }
+        }
+
+        edges /= 2;
+
+        StdOut.print(n - edges <= 1);
     }
 }

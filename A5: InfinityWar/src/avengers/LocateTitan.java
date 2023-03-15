@@ -53,36 +53,71 @@ package avengers;
  */
 
 public class LocateTitan {
-	
     public static void main (String [] args) {
     	
-        if (args.length < 2) {
+        if ( args.length < 2 ) {
             StdOut.println("Execute: java LocateTitan <INput file> <OUTput file>");
             return;
         }
 
-        String inputFile = args[0];
-        String outputFile = args[1];
-        StdIn.setFile(inputFile);
-        StdOut.setFile(outputFile);
+    	StdIn.setFile(args[0]);
+        StdOut.setFile(args[1]);
 
-        int g = StdIn.readInt();
-        Wormholes graph = new Wormholes(g);
+        int numOfGens = StdIn.readInt();
+        int[] genVals = new int[numOfGens];
+        double[] funcVals = new double[numOfGens];
+        int[][] edgeVals = new int[numOfGens][numOfGens];
 
-        for (int i = 0; i < g; i++) {
-            int generatorNumber = StdIn.readInt();
-            double functionalityValue = StdIn.readDouble();
-            WormholeEntry node = new WormholeEntry(generatorNumber, functionalityValue);
-            graph.addNode(node);
+        for (int i = 0; i < numOfGens; i++) {
+            genVals[i] = StdIn.readInt();
+            funcVals[i] = StdIn.readDouble();
         }
 
-        for (int a = 0; a < g; a++) {
-            for (int b = 0; b < g; b++) {
-                int edgeValue = StdIn.readInt();
-                graph.addEdge(a, b, edgeValue);
+        for (int r = 0; r < numOfGens; r++) {
+            for (int c = 0; cc < numOfGens; c++) {
+                edgeVals[r][c] = (int) (StdIn.readInt()/(funcVals[r]*funcVals[c]));
+
             }
         }
 
-        StdOut.print(graph.DijkstraAlgorithm(g - 1));
+        int[] minCost = dijkstra(edgeVals);
+
+        StdOut.print(minCost[numOfGens - 1]);
+        
+    }
+
+    private static int[] dijkstra (int[][] ev) {
+        int[] minCost = new int[ev.length];
+        boolean[] dSet = new boolean[ev.length];
+        
+        for (int i = 1; i < minCost.length; i++) minCost[i] = Integer.MAX_VALUE;
+
+        for (int i = 0; i < minCost.length; i++) {
+            int curr = getMinCostNode(minCost, dSet);
+            dSet[curr] = true;
+
+            for (int j = 0; j < ev.length; j++) {
+                int cumSum = minCost[curr] + ev[curr][j];
+                if (ev[curr][j] != 0 && !dSet[j] && cumSum < minCost[j]) {
+                    minCost[j] = cumSum;
+                }
+            }
+
+        }
+        
+        return minCost;
+    }
+
+    private static int getMinCostNode (int[] mc, boolean[] ds) {
+        int min = Integer.MAX_VALUE, minNode = -1;
+
+        for (int i = 0; i < mc.length; i++) {
+            if (!ds[i] && mc[i] < min) {
+                min = mc[i];
+                minNode = i;
+            }
+        }
+
+        return minNode;
     }
 }

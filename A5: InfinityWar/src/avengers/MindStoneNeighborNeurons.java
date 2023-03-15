@@ -64,30 +64,44 @@ public class MindStoneNeighborNeurons {
         StdIn.setFile(inputFile);
         StdOut.setFile(outputFile);
 
-        int v = StdIn.readInt();
-        NeuralNetwork neuralNetwork = new NeuralNetwork();
-        HashMap<String, Integer> map = new HashMap<>();
+        int neurons = StdIn.readInt();
+        HashMap<String, Integer> neuronName = new HashMap<>();
+        HashMap<Integer, String> revNeuronName = new HashMap<>();
 
-        for (int i = 0; i < v; i++) {
-            String neuronName = StdIn.readString();
-            Neuron neuron = new Neuron(neuronName);
-            neuralNetwork.addNode(neuron);
-            map.put(neuronName, i);
+        for (int i = 0; i < neurons; i++) {
+            String r = StdIn.readString();
+            neuronName.put(r, i);
+            revNeuronName.put(i, r);
         }
 
-        int e = StdIn.readInt();
+        int synapses = StdIn.readInt();
+        int[][] dirSynapses = new int[neurons][neurons];
 
-        for (int i = 0; i < e; i++) {
-            String firstNeuron = StdIn.readString();
-            String secondNeuron = StdIn.readString();
-            int firstNeuronIndex = map.get(firstNeuron);
-            int secondNeuronIndex = map.get(secondNeuron);
-            neuralNetwork.addEdge(firstNeuronIndex, secondNeuronIndex);
+        for (int i = 0; i < synapses; i++) {
+            String from = StdIn.readString(), to = StdIn.readString();
+            int fromRow = neuronName.get(from), toCol = neuronName.get(to);
+
+            dirSynapses[fromRow][toCol] = 1;
         }
 
-        ArrayList<Neuron> ans = neuralNetwork.findMindStoneConnections();
-        for (Neuron neuron : ans) {
-            StdOut.println(neuron.name);
+        int nillOutDegree = -1;
+
+        for (int r = 0; r < neurons; r++) {
+            int outDegree = 0;
+            for (int c = 0; c < neurons; c++) {
+                if (dirSynapses[r][c] == 1) outDegree++;
+            }
+
+            if (outDegree == 0) {
+                nillOutDegree = r;
+                break;
+            }
         }
+        
+        for (int i = 0; i < neurons; i++) {
+            if (dirSynapses[i][nillOutDegree] == 1) {
+                StdOut.println(revNeuronName.get(i));
+            }
+        } 
     }
 }
