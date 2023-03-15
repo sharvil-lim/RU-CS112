@@ -7,5 +7,3 @@ Every Assignment received the max score possible:
 **Assignment 3:** Passed 60/60 testcases <br />
 **Assignment 4:** Passed 50/50 testcases <br />
 **Assignment 5:** Passed 24/24 testcases <br />
-
-_Note: Assignment C3 is an implementation of Assignment 3 written in C._
