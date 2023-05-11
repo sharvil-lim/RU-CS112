@@ -7,3 +7,5 @@ Every Assignment received the max score possible:
 **Assignment 3:** Passed 60/60 testcases <br />
 **Assignment 4:** Passed 50/50 testcases <br />
 **Assignment 5:** Passed 24/24 testcases <br />
+
+Please follow both [Rutgers University's Principles of Academic Integrity](https://academicintegrity.rutgers.edu/) and the Rutgers Department of Computer Science's Academic Integrity Policy.
